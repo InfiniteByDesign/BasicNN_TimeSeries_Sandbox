@@ -28,7 +28,8 @@ with graph.as_default():
     #%% Pre-process the data    
     x_training_batchs,x_test_batches, \
     y_Realtime_training_batches,y_Realtime_testing_batches, \
-    y_Interval_training_batches,y_Interval_testing_batches = \
+    y_Interval_training_batches,y_Interval_testing_batches, \
+    y_Interpolate_training_batches,y_Interpolate_testing_batches = \
         func.split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_interpolated,x2,x2_Interval,trainingSamples,testingSamples,cfg.batchSize)
 
     # Choose from the datasets above for the x and y data
@@ -36,23 +37,25 @@ with graph.as_default():
     x_test      = x_test_batches
     #y_train     = y_Realtime_training_batches
     #y_test      = y_Realtime_testing_batches
-    y_train     = y_Interval_training_batches
-    y_test      = y_Interval_testing_batches
+    #y_train     = y_Interval_training_batches
+    #y_test      = y_Interval_testing_batches
+    y_train     = y_Interpolate_training_batches
+    y_test      = y_Interpolate_testing_batches
 
     # Determine the number of samples for testing and training
     trainingSamples = int(len(x1) * cfg.trainingPct / 100)
     testingSamples  = len(x1) - trainingSamples
        
-    #%% Inputs, Placeholders for the input, output and drop probability
+    # Inputs, Placeholders for the input, output and drop probability
     with tf.name_scope('input'):
         # Input, size determined by batch size and number of inputs per time step
-        x = tf.placeholder(tf.float32, shape=[cfg.batchSize, numInputs], name="x-input") 
+        x = tf.placeholder(tf.float32, shape=[None, numInputs], name="x-input") 
         # Output, size determined by batch size and number of outputs per time step
-        y = tf.placeholder(tf.float32, shape=[cfg.batchSize, numOutputs], name="y-input")
+        y = tf.placeholder(tf.float32, shape=[None, numOutputs], name="y-input")
         # Dropout Keep Pobability
         keep_prob = tf.placeholder("float")
         
-    #%% Setup the RNN Model
+    # Setup the NN Model
     with tf.name_scope('Model'):
         weights, biases = mlp.create_weights_biases(numInputs, cfg.hidden_layer_widths, numOutputs, cfg.init_weights_bias_mean_val, cfg.init_weights_bias_std_dev)
         
@@ -76,21 +79,24 @@ with graph.as_default():
     summary_writer = tf.summary.FileWriter(cfg.dir_path + cfg.log_dir, graph)  
     saver = tf.train.Saver(max_to_keep=1)      
 
+    # Train and Test the model
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         
         # Train the Model
-        mlp.multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_training_batchs,y_Realtime_training_batches,optimizer,cost,merged_summary_op)
+        mlp.multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_train,y_train,optimizer,cost,merged_summary_op)
         
         print("Optimization Finished!")
         print("Running Test Data...")
 
         # Test the Model
-        pred = mlp.multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_test_batches,y_Realtime_testing_batches,predictions)
+        pred = mlp.multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_test,y_test,predictions)
         
         # Display the results
-        actual = np.reshape(y_Realtime_testing_batches,(y_Realtime_testing_batches.shape[0]*y_Realtime_testing_batches.shape[1],y_Realtime_testing_batches.shape[2]))
+        actual = np.reshape(y_Interval_testing_batches,(y_test.shape[0]*y_test.shape[1],y_test.shape[2]))
+        interp = np.reshape(y_Interpolate_testing_batches,(y_test.shape[0]*y_test.shape[1],y_test.shape[2]))
         func.plot_test_data(0,actual,pred)
+        func.plot_test_data(0,interp,pred)
 
     # Flushes the summaries to disk and closes the SummaryWriter
     summary_writer.close()
