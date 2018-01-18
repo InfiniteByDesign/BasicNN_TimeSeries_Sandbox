@@ -1,4 +1,6 @@
-
+"""
+Author: David Beam, db4ai
+"""
 # Include files
 import numpy as np
 import tensorflow as tf
