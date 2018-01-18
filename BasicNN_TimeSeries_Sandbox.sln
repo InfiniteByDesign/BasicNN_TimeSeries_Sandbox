@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "BasicNN_TimeSeries_Sandbox", "BasicNN_TimeSeries_Sandbox\BasicNN_TimeSeries_Sandbox.pyproj", "{AE5B479C-0610-4463-B4C1-D799FFBF2F3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE5B479C-0610-4463-B4C1-D799FFBF2F3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE5B479C-0610-4463-B4C1-D799FFBF2F3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C7291A9C-2CAC-4BE1-A4C6-1F4AACC3FA04}
+	EndGlobalSection
+EndGlobal
