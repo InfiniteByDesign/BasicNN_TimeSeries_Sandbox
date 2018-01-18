@@ -26,8 +26,18 @@ with graph.as_default():
         csvreader.Import_CSV(cfg.dir_path, cfg.dir_char,cfg.filename,cfg.trainingPct)
     
     #%% Pre-process the data    
-    x_training_batchs,x_test_batches,y_Realtime_training_batches,y_Realtime_testing_batches = \
+    x_training_batchs,x_test_batches, \
+    y_Realtime_training_batches,y_Realtime_testing_batches, \
+    y_Interval_training_batches,y_Interval_testing_batches = \
         func.split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_interpolated,x2,x2_Interval,trainingSamples,testingSamples,cfg.batchSize)
+
+    # Choose from the datasets above for the x and y data
+    x_train     = x_training_batchs
+    x_test      = x_test_batches
+    #y_train     = y_Realtime_training_batches
+    #y_test      = y_Realtime_testing_batches
+    y_train     = y_Interval_training_batches
+    y_test      = y_Interval_testing_batches
 
     # Determine the number of samples for testing and training
     trainingSamples = int(len(x1) * cfg.trainingPct / 100)
