@@ -11,13 +11,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
-#%% Split the data into training and testing datasets
-def split_data(series,training,testing):
-    testing  = series[-testing:]    #split off the testing data
-    training = series[0:training]   #split off the training data
-    return training,testing
-
 #%% Create NARX datasets
+"""
+    Creates a Nonlinear Auto-Regressive w/ Exogenous Input style dataset
+    Defined by the number of delayed inputs and the number of delayed outptus
+"""
 def create_NARX_dataset(input, output, numDelayedInputs, numDelayedOutputs):
     # Calculate the sizes of the data
     numInputs = input.shape[1]
@@ -43,13 +41,21 @@ def create_NARX_dataset(input, output, numDelayedInputs, numDelayedOutputs):
         x_input_NARX[i-max(numDelayedInputs+1,numDelayedOutputs),:] = temp_row
     return x_input_NARX
 
-#%% Create datasets from the batches
-def make_batches(series,samples):
-    data = series[:(len(series)-(len(series) % samples))]   #trim off extra to ensure equal size batches
-    batches = data.reshape(-1, samples, series.shape[1])    #form batches
-    return batches
+
+#%% Split the data into training and testing datasets
+"""
+    Takes the full dataset and splits it into two sets defined by the testing data size and the training data size
+"""
+def split_data(series,training,testing):
+    testing  = series[-testing:]    #split off the testing data
+    training = series[0:training]   #split off the training data
+    return training,testing
+
 
 #%% Split data into testing and training sets
+"""
+    Uses the split_data function to split the required datasets into training and testing sets
+"""
 def split_data_into_sets(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,batchSize):
     molW_training,molW_test                 = split_data(molecularWeights,trainingSamples,testingSamples)
     gcRealtime_training,gcRealtime_test     = split_data(gcRealtime,trainingSamples,testingSamples)
@@ -60,16 +66,24 @@ def split_data_into_sets(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs
     
     return molW_training,molW_test,gcRealtime_training,gcRealtime_test,gcInterval_training,gcInterval_test,gcInterval_i_training,gcInterval_i_test,pvs_training,pvs_test,pvInterval_training,pvInterval_test
 
+
+#%% Create datasets from the batches
+"""
+    Take a 2d array and reshapes it into a 3d array with the first dimension being the batch number
+    [batch_size, time-step, sample]
+"""
+def make_batches(series,samples):
+    data = series[:(len(series)-(len(series) % samples))]   #trim off extra to ensure equal size batches
+    batches = data.reshape(-1, samples, series.shape[1])    #form batches
+    return batches
+
+
 #%% Import the data and separate into batches
 def split_data_into_batches(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,batchSize):
     
     # Split the datasets into testing and training
-    #molW_training,molW_test             = split_data(molecularWeights,trainingSamples,testingSamples)
-    #gcRealtime_training,gcRealtime_test = split_data(gcRealtime,trainingSamples,testingSamples)
-    #gcInterval_training,gcInterval_test = split_data(gcInterval,trainingSamples,testingSamples)
-    #pvs_training,pvs_test               = split_data(pvs,trainingSamples,testingSamples)
-    molW_training,molW_test,gcRealtime_training,gcRealtime_test,gcInterval_training,gcInterval_test,gcInterval_i_training,gcInterval_i_test,pvs_training,pvs_test,pvInterval_training,pvInterval_test = split_data_into_sets(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,batchSize)
-    #molW_training,molW_test,gcRealtime_training,gcRealtime_test,gcInterval_training,gcInterval_test,pvs_training,pvs_test = split_data_into_sets(molecularWeights,gcRealtime,gcInterval,pvs,trainingSamples,testingSamples,batchSize)
+    molW_training,molW_test,gcRealtime_training,gcRealtime_test,gcInterval_training,gcInterval_test,gcInterval_i_training,gcInterval_i_test,pvs_training,pvs_test,pvInterval_training,pvInterval_test = \
+        split_data_into_sets(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,batchSize)
     
     # Create the input dataset for the RNN model
     x_input = pvs_training
@@ -86,7 +100,8 @@ def split_data_into_batches(molecularWeights,gcRealtime,gcInterval,gcInterval_i,
     # Create the input dataset for the NARX model
     #x_input_NARX = create_NARX_dataset(x_input, gcRealtime_training,numInputDelays,numOutputDelays)
     
-    return x_input_batches,x_test_batches,gcRealtime_training_batches,gcRealtime_testing_batches,gcRealtime_test
+    return x_input_batches,x_test_batches,gcRealtime_training_batches,gcRealtime_testing_batches
+
 
 #%% Plot results
 def plot_test_data(gas_sample, actual, predict):
@@ -96,6 +111,7 @@ def plot_test_data(gas_sample, actual, predict):
     plt.legend(loc="upper left")
     plt.xlabel("Time Periods")
     plt.show()
+
 
 #%% TensorBoard summaries for a given variable
 def variable_summaries(var):
@@ -109,4 +125,3 @@ def variable_summaries(var):
         tf.summary.scalar('max', tf.reduce_max(var))
         tf.summary.scalar('min', tf.reduce_min(var))
         tf.summary.histogram('histogram', var)
-
