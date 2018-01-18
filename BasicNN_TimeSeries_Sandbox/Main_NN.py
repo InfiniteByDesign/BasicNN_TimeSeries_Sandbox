@@ -1,5 +1,6 @@
 """
 Author: David Beam, db4ai
+Date:   18 January 2018
 """
 # Include files
 import numpy as np
