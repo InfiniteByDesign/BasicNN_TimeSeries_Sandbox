@@ -22,15 +22,16 @@ with graph.as_default():
         
     #%% Import the data, specific to the dataset being used for the NN.
     #   Modify this code and the CSVReader to your specific dataset
-    molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,numInputs,numOutputs,trainingSamples,testingSamples= csvreader.Import_CSV(cfg.filename,cfg.trainingPct)
+    x1,x2,x2_Interval,y_Realtime,y_Interval,y_Interval_interpolated,numInputs,numOutputs,trainingSamples,testingSamples = \
+        csvreader.Import_CSV(cfg.dir_path, cfg.dir_char,cfg.filename,cfg.trainingPct)
     
     #%% Pre-process the data    
     x_training_batchs,x_test_batches,y_Realtime_training_batches,y_Realtime_testing_batches = \
-        func.split_data_into_batches(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,cfg.batchSize)
+        func.split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_interpolated,x2,x2_Interval,trainingSamples,testingSamples,cfg.batchSize)
 
     # Determine the number of samples for testing and training
-    trainingSamples = int(len(molecularWeights) * cfg.trainingPct / 100)
-    testingSamples  = len(molecularWeights) - trainingSamples
+    trainingSamples = int(len(x1) * cfg.trainingPct / 100)
+    testingSamples  = len(x1) - trainingSamples
        
     #%% Inputs, Placeholders for the input, output and drop probability
     with tf.name_scope('input'):
@@ -43,29 +44,8 @@ with graph.as_default():
         
     #%% Setup the RNN Model
     with tf.name_scope('Model'):
-
-        # Create and initialize the weights of the NN
-        with tf.name_scope('weights'):
-            weights = {
-                'h1': tf.Variable(tf.random_normal([numInputs, cfg.hidden_layer_widths[0]])),
-                'out': tf.Variable(tf.random_normal([cfg.hidden_layer_widths[0], numOutputs]))
-            }
-            with tf.name_scope('h1'):
-                func.variable_summaries(weights['h1'])
-            with tf.name_scope('out'):
-                func.variable_summaries(weights['out'])
-
-        # Create and initialize the biases of the NN
-        with tf.name_scope('biases'):
-            biases = {
-                'b1': tf.Variable(tf.random_normal([cfg.hidden_layer_widths[0]])),
-                'out': tf.Variable(tf.random_normal([numOutputs]))
-            }
-            with tf.name_scope('b1'):
-                func.variable_summaries(biases['b1'])
-            with tf.name_scope('out'):
-                func.variable_summaries(biases['out'])
-
+        weights, biases = mlp.create_weights_biases(numInputs, cfg.hidden_layer_widths, numOutputs, cfg.init_weights_bias_mean_val, cfg.init_weights_bias_std_dev)
+        
     # The Prediction function
     with tf.name_scope('predictions'):
         predictions = mlp.multilayer_perceptron(x, weights, biases, keep_prob) 

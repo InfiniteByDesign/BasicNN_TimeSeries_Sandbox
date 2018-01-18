@@ -1,13 +1,71 @@
+"""
+Author:         David Beam, db4ai
+Date:           18 January 2018
+Description:    Functions used to create, train, and test a multilayer perceptron neural network
+"""
+
 import numpy as np
 import tensorflow as tf
 
-#%% Create a multilayer perceptron network
+#%% Create arrays containing the weights and biases for the MLP
+def create_weights_biases(numInputs, hidden_layer_widths, numOutputs, mean, std_dev):
+    # Create and initialize the weights of the NN
+    with tf.name_scope('weights'):
+        weights = {}
+        for i in range(len(hidden_layer_widths)+1):
+            # Add hidden layers
+            if i < len(hidden_layer_widths):
+                # First layer, size by the number of inputs to the NN
+                if i==0:
+                    key = 'h' + str(i+1)
+                    weights[key]  = tf.Variable(tf.random_normal([numInputs, hidden_layer_widths[i]],mean,std_dev))
+                # Hidden layers
+                else:
+                    key = 'h' + str(i+1)
+                    weights[key]  = tf.Variable(tf.random_normal([hidden_layer_widths[i-1], hidden_layer_widths[i]],mean,std_dev))
+            # Add the output layer
+            else:
+                key = 'out'
+                weights['out'] = tf.Variable(tf.random_normal([hidden_layer_widths[i-1], numOutputs],mean,std_dev))
+            # Add the variable to TensorBoard
+            with tf.name_scope(key):
+                variable_summaries(weights[key])
+    # Create and initialize the weights of the NN
+    with tf.name_scope('biases'):
+        biases = {}
+        for i in range(len(hidden_layer_widths)+1):
+            # Add hidden layers
+            if i < len(hidden_layer_widths):
+                # Hidden layers
+                key = 'b' + str(i+1)
+                biases[key]  = tf.Variable(tf.random_normal([hidden_layer_widths[i]],mean,std_dev))
+            # Add the output layer
+            else:
+                key = 'out'
+                biases['out'] = tf.Variable(tf.random_normal([numOutputs],mean,std_dev))
+            # Add the variable to TensorBoard
+            with tf.name_scope(key):
+                variable_summaries(biases[key])
+    return weights,biases
+
+
+#%% Execute a multilayer perceptron network for the given input, weights, biases and dropout keep probability
 def multilayer_perceptron(x, weights, biases, keep_prob):
-    layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
-    layer_1 = tf.nn.relu(layer_1)
-    layer_1 = tf.nn.dropout(layer_1, keep_prob)
-    out_layer = tf.matmul(layer_1, weights['out']) + biases['out']
-    return out_layer
+    with tf.name_scope('layers'):
+        # Initialize the first layer to the input array
+        layer = x
+        # Loop through the layers and apply the weights and biases
+        for i in range(len(weights)):
+            # Create a layer name for TensorBoard
+            layer_name = 'layer' + str(i+1)
+            with tf.name_scope(layer_name):
+                # Apply the weights and biases
+                if i<len(weights)-1:
+                    layer = tf.add(tf.matmul(layer, weights['h'+str(i+1)]), biases['b'+str(i+1)])
+                else:
+                    layer = tf.add(tf.matmul(layer, weights['out']), biases['out'])
+    return layer
+
 
 #%% Train MLP network
 def multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_batches,y_batches,optimizer,cost,merged_summary_op):    
@@ -30,7 +88,7 @@ def multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_batches,
         summary_writer.flush()
 
     
-#%% Test teh MLP network
+#%% Test the MLP network
 def multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_batches,y_batches,predictions):
     predicted = np.zeros(shape=(y_batches.shape[0],y_batches.shape[1],y_batches.shape[2]), dtype=float)
     for i in range(x_batches.shape[0]):
@@ -42,3 +100,16 @@ def multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_batches,y_
                         })
         predicted[i,:,:] = temp[0]
     return np.reshape(predicted,(predicted.shape[0]*predicted.shape[1],y_batches.shape[2]))
+
+
+#%% TensorBoard summaries for a given variable
+def variable_summaries(var):
+    with tf.name_scope('summaries'):
+        mean = tf.reduce_mean(var)
+        tf.summary.scalar('mean', mean)
+        with tf.name_scope('stddev'):
+          stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
+        tf.summary.scalar('stddev', stddev)
+        tf.summary.scalar('max', tf.reduce_max(var))
+        tf.summary.scalar('min', tf.reduce_min(var))
+        tf.summary.histogram('histogram', var)

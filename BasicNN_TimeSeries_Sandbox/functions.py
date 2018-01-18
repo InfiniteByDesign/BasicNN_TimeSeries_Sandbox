@@ -79,28 +79,28 @@ def make_batches(series,samples):
 
 
 #%% Import the data and separate into batches
-def split_data_into_batches(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,batchSize):
+def split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_i,x2,x2_Interval,trainingSamples,testingSamples,batchSize):
     
     # Split the datasets into testing and training
-    molW_training,molW_test,gcRealtime_training,gcRealtime_test,gcInterval_training,gcInterval_test,gcInterval_i_training,gcInterval_i_test,pvs_training,pvs_test,pvInterval_training,pvInterval_test = \
-        split_data_into_sets(molecularWeights,gcRealtime,gcInterval,gcInterval_i,pvs,pvInterval,trainingSamples,testingSamples,batchSize)
+    molW_training,molW_test,y_Realtime_training,y_Realtime_test,y_Interval_training,y_Interval_test,y_Interval_i_training,y_Interval_i_test,x2_training,x2_test,x2_Interval_training,x2_Interval_test = \
+        split_data_into_sets(x1,y_Realtime,y_Interval,y_Interval_i,x2,x2_Interval,trainingSamples,testingSamples,batchSize)
     
-    # Create the input dataset for the RNN model
-    x_input = pvs_training
-    x_test  = pvs_test
-    #x_input = np.concatenate((molW_training, pvs_training), axis=1)
-    #x_test  = np.concatenate((molW_test, pvs_test), axis=1)
+    # Create the input dataset for the NN model
+    x_input = x2_training
+    x_test  = x2_test
+    #x_input = np.concatenate((molW_training, x2_training), axis=1)
+    #x_test  = np.concatenate((molW_test, x2_test), axis=1)
     
     # Create batches for the RNN model
-    gcRealtime_training_batches  = make_batches(gcRealtime_training, batchSize)
-    gcRealtime_testing_batches   = make_batches(gcRealtime_test, batchSize)
+    y_Realtime_training_batches  = make_batches(y_Realtime_training, batchSize)
+    y_Realtime_testing_batches   = make_batches(y_Realtime_test, batchSize)
     x_input_batches              = make_batches(x_input, batchSize)
     x_test_batches               = make_batches(x_test, batchSize)
     
     # Create the input dataset for the NARX model
-    #x_input_NARX = create_NARX_dataset(x_input, gcRealtime_training,numInputDelays,numOutputDelays)
+    #x_input_NARX = create_NARX_dataset(x_input, y_Realtime_training,numInputDelays,numOutputDelays)
     
-    return x_input_batches,x_test_batches,gcRealtime_training_batches,gcRealtime_testing_batches
+    return x_input_batches,x_test_batches,y_Realtime_training_batches,y_Realtime_testing_batches
 
 
 #%% Plot results

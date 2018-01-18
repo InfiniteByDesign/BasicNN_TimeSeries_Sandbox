@@ -1,38 +1,35 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 10 06:22:53 2018
-
-@author: David
+Author:         David Beam, db4ai
+Date:           18 January 2018
+Description:    Configuration parameters to run the following models
+                    Main_NN   - basic multilayer perceptron model
+                    Main_NARX - nonlinear autoregressive mlp with exgenous inputs (delayed inputs and outputs fed back into the NN)
 """
-
 import os
 
-# The amount of data to use for training
-trainingPct = 90   
-
-# Batch size, samples per batch
-batchSize = 100
-
-# Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
-epochs = 10
-
-# Learning Rate
-learning_rate = 0.001 
-
-# The filename for the training/validating data
+# The CSV filename for the training/testing data, leave off the .csv
 filename = "InputData2_100k"
 
-# NARX NN parameters
+# General NN parameters
+trainingPct                 = 90            # The amount of data to use for training
+batchSize                   = 100           # Batch size, samples per batch
+epochs                      = 10            # Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
+learning_rate               = 0.001         # Learning Rate 
+dropout_output_keep_prob    = .95           # Percentage of neurons to keep between 
+hidden_layer_widths         = [64, 32, 16]  # List of hidden layer widths (num neurons per hidden layer)
+display_step                = 1             # How often to update the console with text
+init_weights_bias_mean_val  = 0.0           # Mean value of the normal distribution used to initialize the weights and biases
+init_weights_bias_std_dev   = 0.1           # Standard Deviation of the normal distribution used to initialize the weights and biases
+
+# NARX NN parameters (not implemented yet)
 numInputDelays           = 5
 numOutputDelays          = 5
 
-# General NN parameters
-dropout_output_keep_prob = .95
-num_hidden_layers        = 2
-hidden_layer_widths = [64]
-display_step = 1                                        # How often to update the console with text
-
+# Path settings, checks for Windows environment to choose between \ and /
+if os.name == 'nt':
+    dir_char = '\\'
+else:
+    dir_char = '/'
 dir_path = os.path.dirname(os.path.realpath(__file__))
-log_dir = '\\logs'
-model_dir = '\\models'
+log_dir = dir_char + 'logs'
+model_dir = dir_char + 'models'
