@@ -26,11 +26,12 @@ with graph.as_default():
         csvreader.Import_CSV(cfg.dir_path, cfg.dir_char,cfg.filename,cfg.trainingPct)
     
     #%% Pre-process the data    
-    x_training_batchs,x_test_batches, \
-    y_Realtime_training_batches,y_Realtime_testing_batches, \
-    y_Interval_training_batches,y_Interval_testing_batches, \
+    x_training_batchs,x_test_batches,                              \
+    x_training_NARX_batches,                                       \
+    y_Realtime_training_batches,y_Realtime_testing_batches,        \
+    y_Interval_training_batches,y_Interval_testing_batches,        \
     y_Interpolate_training_batches,y_Interpolate_testing_batches = \
-        func.split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_interpolated,x2,x2_Interval,trainingSamples,testingSamples,cfg.batchSize)
+        func.split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_interpolated,x2,x2_Interval,trainingSamples,testingSamples,cfg.batchSize,cfg.numInputDelays,cfg.numOutputDelays)
 
     # Choose from the datasets above for the x and y data
     x_train     = x_training_batchs

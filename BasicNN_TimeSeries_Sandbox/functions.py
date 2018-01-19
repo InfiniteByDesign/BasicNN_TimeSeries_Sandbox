@@ -80,8 +80,8 @@ def make_batches(series,samples):
 
 
 #%% Import the data and separate into batches
-def split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_Interpolated,x2,x2_Interval,trainingSamples,testingSamples,batchSize):
-    
+def split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_Interpolated,x2,x2_Interval,trainingSamples,testingSamples,batchSize,numInputDelays,numOutputDelays):
+
     # Split the datasets into testing and training
     x1_training,x1_test, \
     y_Realtime_training,y_Realtime_test, \
@@ -99,20 +99,25 @@ def split_data_into_batches(x1,y_Realtime,y_Interval,y_Interval_Interpolated,x2,
     #x_input = np.concatenate((x1_training, x2_training), axis=1)
     #x_test  = np.concatenate((x1_test, x2_test), axis=1)
     
+    # Create the input dataset for the NARX model
+    x_input_NARX = create_NARX_dataset(x_input, y_Realtime_training,numInputDelays,numOutputDelays)
+    
     # Create batches for the NN model
     x_input_batches                 = make_batches(x_input, batchSize)
     x_test_batches                  = make_batches(x_test, batchSize)
+    x_input_NARX_batches            = make_batches(x_input, batchSize)
+    x_testNARX__batches             = make_batches(x_test, batchSize)
     y_Realtime_training_batches     = make_batches(y_Realtime_training, batchSize)
     y_Realtime_testing_batches      = make_batches(y_Realtime_test, batchSize)
     y_Interval_training_batches     = make_batches(y_Interval_training, batchSize)
     y_Interval_testing_batches      = make_batches(y_Interval_test, batchSize)
     y_Interpolate_training_batches  = make_batches(y_Interval_Interpolated_training, batchSize)
     y_Interpolate_testing_batches   = make_batches(y_Interval_Interpolated_test, batchSize)
+    x_input_NARX_batches            = make_batches(x_input_NARX, batchSize)
     
-    # Create the input dataset for the NARX model
-    #x_input_NARX = create_NARX_dataset(x_input, y_Realtime_training,numInputDelays,numOutputDelays)
     
-    return x_input_batches,x_test_batches,y_Realtime_training_batches,y_Realtime_testing_batches,y_Interval_training_batches, y_Interval_testing_batches,y_Interpolate_training_batches, y_Interpolate_testing_batches
+    
+    return x_input_batches,x_test_batches,x_input_NARX_batches,y_Realtime_training_batches,y_Realtime_testing_batches,y_Interval_training_batches, y_Interval_testing_batches,y_Interpolate_training_batches, y_Interpolate_testing_batches
 
 
 #%% Plot results

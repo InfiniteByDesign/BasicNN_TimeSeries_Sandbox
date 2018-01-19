@@ -26,6 +26,7 @@
     <Compile Include="Configuration.py" />
     <Compile Include="CSVReader.py" />
     <Compile Include="functions.py" />
+    <Compile Include="Main_NARX.py" />
     <Compile Include="Main_NN.py" />
     <Compile Include="MLP_Definition.py">
       <SubType>Code</SubType>
