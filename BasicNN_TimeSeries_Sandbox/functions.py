@@ -20,14 +20,14 @@ def create_NARX_dataset(input, output, numDelayedInputs, numDelayedOutputs):
     # Calculate the sizes of the data
     numInputs = input.shape[1]
     numOutputs = output.shape[1]
-    length = input.shape[0] - max(numDelayedInputs+1,numDelayedOutputs)
+    length = input.shape[0] - max(numDelayedInputs,numDelayedOutputs)
     width = ((numDelayedInputs + 1)*numInputs) + (numDelayedOutputs*numOutputs)
     
     # Placeholder to hold the dataset
     x_input_NARX = np.zeros((length, width) , dtype=np.float32)
     
     # Loop through all the inputs
-    for i in range(max(numDelayedInputs+1,numDelayedOutputs), input.shape[0]):
+    for i in range(max(0,max(numDelayedInputs+1,numDelayedOutputs)-1), input.shape[0]):
         
         # Append delayed inputs to the row        
         temp_row = input[i,:]
@@ -36,7 +36,7 @@ def create_NARX_dataset(input, output, numDelayedInputs, numDelayedOutputs):
         
         # Append delayed outputs to the row
         for j in range(0,numDelayedOutputs):
-            temp_row = np.concatenate([temp_row, output[i-numDelayedOutputs-j,:]], axis=0)
+            temp_row = np.concatenate([temp_row, output[i-j,:]], axis=0)
             
         x_input_NARX[i-max(numDelayedInputs+1,numDelayedOutputs),:] = temp_row
     return x_input_NARX

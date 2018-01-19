@@ -19,7 +19,7 @@ filename = "InputData3_100k"
 # General NN parameters
 trainingPct                 = 98            # The amount of data to use for training
 batchSize                   = 100           # Batch size, samples per batch
-epochs                      = 1000          # Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
+epochs                      = 1          # Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
 learning_rate               = 0.001         # Learning Rate 
 dropout_output_keep_prob    = .95           # Percentage of neurons to keep between 
 hidden_layer_widths         = [64]          # List of hidden layer widths (num neurons per hidden layer)

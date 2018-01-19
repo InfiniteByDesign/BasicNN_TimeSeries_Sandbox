@@ -5,7 +5,7 @@
     <ProjectGuid>ae5b479c-0610-4463-b4c1-d799ffbf2f3d</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
-    <StartupFile>Main_NN.py</StartupFile>
+    <StartupFile>Main_NARX.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

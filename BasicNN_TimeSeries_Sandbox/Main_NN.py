@@ -19,6 +19,8 @@ import MLP_Definition as mlp
 tf.reset_default_graph()
 graph = tf.Graph()
 with graph.as_default():
+    
+    print("Loading Data")
         
     #%% Import the data, specific to the dataset being used for the NN.
     #   Modify this code and the CSVReader to your specific dataset
@@ -47,6 +49,8 @@ with graph.as_default():
     trainingSamples = int(len(x1) * cfg.trainingPct / 100)
     testingSamples  = len(x1) - trainingSamples
        
+    print("Defining Variables")
+       
     # Inputs, Placeholders for the input, output and drop probability
     with tf.name_scope('input'):
         # Input, size determined by batch size and number of inputs per time step
@@ -55,6 +59,8 @@ with graph.as_default():
         y = tf.placeholder(tf.float32, shape=[None, numOutputs], name="y-input")
         # Dropout Keep Pobability
         keep_prob = tf.placeholder("float")
+
+    print("Defining Model")
         
     # Setup the NN Model
     with tf.name_scope('Model'):
@@ -80,18 +86,22 @@ with graph.as_default():
     summary_writer = tf.summary.FileWriter(cfg.dir_path + cfg.log_dir, graph)  
     saver = tf.train.Saver(max_to_keep=1)      
 
+    print("Starting TensorFlow Session")  
+
     # Train and Test the model
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         
+        print("Training Model")
+        
         # Train the Model
         mlp.multilayer_perceptron_train(sess,cfg,saver,summary_writer,x,y,keep_prob,x_train,y_train,optimizer,cost,merged_summary_op)
         
-        print("Optimization Finished!")
+        print("Optimization Finished")
         print("Running Test Data...")
 
         # Test the Model
-        pred = mlp.multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_test,y_test,predictions)
+        pred = mlp.multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_test,y_test.shape,predictions)
         
         # Display the results
         actual = np.reshape(y_Interval_testing_batches,(y_test.shape[0]*y_test.shape[1],y_test.shape[2]))

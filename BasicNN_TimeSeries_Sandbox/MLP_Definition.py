@@ -92,18 +92,35 @@ def multilayer_perceptron_train(sess,cfg,saver,summary_writer,x,y,keep_prob,x_ba
 
     
 #%% Test the MLP network
-def multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_batches,y_batches,predictions):
-    predicted = np.zeros(shape=(y_batches.shape[0],y_batches.shape[1],y_batches.shape[2]), dtype=float)
-    for i in range(x_batches.shape[0]):
-        batch_testx = x_batches[i,:,:]
-        temp = sess.run([predictions], 
-                        feed_dict={
-                            x: batch_testx,
-                            keep_prob: 1.0
-                        })
-        predicted[i,:,:] = temp[0]
-    return np.reshape(predicted,(predicted.shape[0]*predicted.shape[1],y_batches.shape[2]))
-
+def multiplayer_perceptron_test(sess,cfg,summary_writer,x,keep_prob,x_input,y_shape,predictions):
+    # Run the predictions for a batch style input (3 dimensions [batch, timestep, sample])
+    if len(x_input.shape)==3:
+        predicted = np.zeros(shape=(y_shape[0],y_shape[1],y_shape[2]), dtype=float)
+        for i in range(x_input.shape[0]):
+            batch_testx = x_input[i,:,:]
+            temp = sess.run([predictions], 
+                            feed_dict={
+                                x: batch_testx,
+                                keep_prob: 1.0
+                            })
+            predicted[i,:,:] = temp[0]
+        return np.reshape(predicted,(predicted.shape[0]*predicted.shape[1],y_shape[2]))
+    # Run the predictions for a non-batch style input (2 dimensions [timestep, sample])
+    elif len(x_input.shape)==2:
+        predicted = np.zeros(shape=(y_shape[0],y_shape[1]), dtype=float)
+        for i in range(x_input.shape[0]):
+            row_x = x_input[i,:]
+            row_x = np.reshape(np.append(row_x, row_x,axis=0),[-1,len(row_x)])
+            temp = sess.run([predictions], 
+                            feed_dict={
+                                x: row_x,
+                                keep_prob: 1.0
+                            })
+            predicted[i,:] = temp[0][0,:]
+        return predicted
+    # Unknown dimension, Error
+    else:
+        return 0.0
 
 #%% TensorBoard summaries for a given variable
 def variable_summaries(var):
