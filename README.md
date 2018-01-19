@@ -7,8 +7,8 @@ Sandbox to test different NN architectures on Time Series data
 -------------------------------------
 All of the configuration options are available in the configuration.py script.  You can control the NN size, learning rate, etc.
 For example, you can configure NN using any of the following hidden_layer_widths:
-  [10]
-  [100, 50, 2]
+  [10] or
+  [100, 50, 2] or
   [256, 128, 64, 32]
 The input and output layers are automatically sized to fit your dataset
 
