@@ -4,6 +4,7 @@ Date:           18 January 2018
 Description:    Functions used to create, train, and test a multilayer perceptron neural network
 """
 
+import datetime
 import numpy as np
 import tensorflow as tf
 
@@ -68,7 +69,7 @@ def multilayer_perceptron(x, weights, biases, keep_prob):
 
 
 #%% Train MLP network
-def multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_batches,y_batches,optimizer,cost,merged_summary_op):    
+def multilayer_perceptron_train(sess,cfg,saver,summary_writer,x,y,keep_prob,x_batches,y_batches,optimizer,cost,merged_summary_op):    
     #  Loop through each epoch
     for epoch in range(cfg.epochs):
         avg_cost = 0.0
@@ -84,6 +85,8 @@ def multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_batches,
         if epoch % cfg.display_step == 0:
             print("Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(avg_cost))
 
+        # Save the model and save the TensorBoard summaries
+        save_path = saver.save(sess, cfg.dir_path + cfg.model_dir + cfg.model_name)
         summary_writer.add_summary(summary, epoch)
         summary_writer.flush()
 

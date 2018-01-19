@@ -6,6 +6,7 @@ Description:    Configuration parameters to run the following models
                     Main_NARX - nonlinear autoregressive mlp with exgenous inputs (delayed inputs and outputs fed back into the NN)
 """
 import os
+import datetime
 
 # The CSV filename for the training/testing data, leave off the .csv
 #   InputData1_100k - Sampling Time=1 sec, y Update Time=1 min,  100k samples
@@ -18,10 +19,10 @@ filename = "InputData3_100k"
 # General NN parameters
 trainingPct                 = 98            # The amount of data to use for training
 batchSize                   = 100           # Batch size, samples per batch
-epochs                      = 10            # Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
+epochs                      = 1000          # Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
 learning_rate               = 0.001         # Learning Rate 
 dropout_output_keep_prob    = .95           # Percentage of neurons to keep between 
-hidden_layer_widths         = [64, 32, 16]  # List of hidden layer widths (num neurons per hidden layer)
+hidden_layer_widths         = [64]          # List of hidden layer widths (num neurons per hidden layer)
 display_step                = 1             # How often to update the console with text
 init_weights_bias_mean_val  = 0.0           # Mean value of the normal distribution used to initialize the weights and biases
 init_weights_bias_std_dev   = 0.1           # Standard Deviation of the normal distribution used to initialize the weights and biases
@@ -38,3 +39,4 @@ else:
 dir_path = os.path.dirname(os.path.realpath(__file__))
 log_dir = dir_char + 'logs'
 model_dir = dir_char + 'models'
+model_name = dir_char + "NN " + str(datetime.datetime.now()).replace(":","-") + ".cpkt"

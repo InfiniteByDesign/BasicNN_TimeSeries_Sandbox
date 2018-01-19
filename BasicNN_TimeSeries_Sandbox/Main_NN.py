@@ -84,7 +84,7 @@ with graph.as_default():
         sess.run(tf.global_variables_initializer())
         
         # Train the Model
-        mlp.multilayer_perceptron_train(sess,cfg,summary_writer,x,y,keep_prob,x_train,y_train,optimizer,cost,merged_summary_op)
+        mlp.multilayer_perceptron_train(sess,cfg,saver,summary_writer,x,y,keep_prob,x_train,y_train,optimizer,cost,merged_summary_op)
         
         print("Optimization Finished!")
         print("Running Test Data...")
