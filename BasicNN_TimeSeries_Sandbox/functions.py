@@ -11,6 +11,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
+#%% Print program header
+def print_header():
+    print("==============================================================================================")
+    print("description         :NN time series sandbox scripts.")
+    print("author              :David Beam, github db4ai")
+    print("date                :20110930")
+    print("python version      :3.6.3 (v3.6.3:2c5fed8, Oct  3 2017, 18:11:49) [MSC v.1900 64 bit (AMD64)]")
+    print("tensorflow version  :1.4.0")
+    print("notes               :")
+    print("==============================================================================================")
+
+
 #%% Create NARX datasets
 """
     Creates a Nonlinear Auto-Regressive w/ Exogenous Input style dataset

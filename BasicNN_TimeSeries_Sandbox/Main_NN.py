@@ -15,6 +15,8 @@ import functions as func
 import Configuration as cfg
 import MLP_Definition as mlp
 
+func.print_header()
+
 # Explicitly create a Graph object
 tf.reset_default_graph()
 graph = tf.Graph()

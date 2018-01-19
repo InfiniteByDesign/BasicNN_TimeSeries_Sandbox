@@ -3,6 +3,7 @@ Author:         David Beam, db4ai
 Date:           18 January 2018
 Description:    Create a MLP NN, train using the supplied dataset then test and display the test results on a chart
 """
+import sys
 # Include files
 import numpy as np
 import tensorflow as tf
@@ -14,6 +15,8 @@ import CSVReader as csvreader
 import functions as func
 import Configuration as cfg
 import MLP_Definition as mlp
+
+func.print_header()
 
 # Explicitly create a Graph object
 tf.reset_default_graph()
