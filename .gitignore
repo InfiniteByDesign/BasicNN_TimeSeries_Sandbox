@@ -5,3 +5,5 @@
 /BasicNN_TimeSeries_Sandbox/__pycache__
 /.vs/BasicNN_TimeSeries_Sandbox/v15
 /BasicNN_TimeSeries_Sandbox/logs
+/BasicNN_TimeSeries_Sandbox/InputData3_10M.csv
+/BasicNN_TimeSeries_Sandbox/InputData3_1M.csv

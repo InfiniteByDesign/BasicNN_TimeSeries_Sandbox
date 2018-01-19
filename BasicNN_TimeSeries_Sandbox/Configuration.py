@@ -8,10 +8,15 @@ Description:    Configuration parameters to run the following models
 import os
 
 # The CSV filename for the training/testing data, leave off the .csv
-filename = "InputData2_100k"
+#   InputData1_100k - Sampling Time=1 sec, y Update Time=1 min,  100k samples
+#   InputData2_100k - Sampling Time=1 sec, y Update Time=1 min,  100k samples
+#   InputData3_100k - Sampling Time=1 sec, y Update Time=15 min, 100k samples
+#   InputData3_1M   - Sampling Time=1 sec, y Update Time=15 min, 1M   samples (not provided because of file size)
+#   InputData3_10M  - Sampling Time=1 sec, y Update Time=15 min, 10M  samples (not provided because of file size)
+filename = "InputData3_100k"
 
 # General NN parameters
-trainingPct                 = 90            # The amount of data to use for training
+trainingPct                 = 98            # The amount of data to use for training
 batchSize                   = 100           # Batch size, samples per batch
 epochs                      = 10            # Number of iterations or training cycles, includes both the FeedFoward and Backpropogation
 learning_rate               = 0.001         # Learning Rate 
