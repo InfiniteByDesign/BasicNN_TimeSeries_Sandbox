@@ -5,7 +5,7 @@
     <ProjectGuid>ae5b479c-0610-4463-b4c1-d799ffbf2f3d</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
-    <StartupFile>Main_NARX.py</StartupFile>
+    <StartupFile>Main_RNN.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -27,10 +27,12 @@
     <Compile Include="CSVReader.py" />
     <Compile Include="functions.py" />
     <Compile Include="Main_NARX.py" />
+    <Compile Include="Main_RNN.py" />
     <Compile Include="Main_NN.py" />
     <Compile Include="MLP_Definition.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RNN_Definition.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="InputData1_100k.csv" />
